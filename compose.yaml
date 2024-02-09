@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - '3000:3000'
+    # restart: always
+    depends_on:
+      - db
+    environment:
+      - 'DB_HOST=db'
+  db:
+    image: postgres
+    ports:
+      - '5432:5432'
+    environment:
+      - 'POSTGRES_PASSWORD=postgres'
+      - 'POSTGRES_DB=todo'
+  adminer:
+    image: adminer
+    ports:
+      - '8080:8080'
