@@ -1,11 +1,11 @@
 version: '3.8'
 services:
   frontend:
-    build: ./frontend
+    image: ghcr.io/naborisk/fullstack-todo-frontend:main
     ports:
       - '3000:3000'
   backend:
-    build: ./backend
+    image: ghcr.io/naborisk/fullstack-todo-backend:main
     ports:
       - '3001:3001'
     restart: always
@@ -21,7 +21,3 @@ services:
     environment:
       - 'POSTGRES_PASSWORD=postgres'
       - 'POSTGRES_DB=todo'
-  adminer:
-    image: adminer
-    ports:
-      - '8080:8080'

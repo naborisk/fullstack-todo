@@ -8,6 +8,12 @@ The stack is comprised of the following components
 - Frontend: Next.js
     - shadcn/ui
 
+## Running
+To run the production build, run `docker compose up` with `compose-prod.yaml`
+```sh
+docker compose -f compose-prod.yml up
+```
+
 ## Building
 Use `docker-compose` to build the app
 ```sh
