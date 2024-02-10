@@ -2,13 +2,18 @@ package main
 
 import (
 	"net/http"
+  "os"
 
 	"github.com/labstack/echo/v4"
+  "github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
+  port := os.Getenv("PORT")
+
   // Create a new instance of Echo
   e := echo.New()
+  e.Use(middleware.CORS())
 
   // Connect to database
   db, err := initDB()
@@ -34,5 +39,5 @@ func main() {
   e.DELETE("/todos/:id", service.deleteTodo)
 
   // Start as a web server, and log any errors
-  e.Logger.Fatal(e.Start(":3000"))
+  e.Logger.Fatal(e.Start(":" + port))
 }
