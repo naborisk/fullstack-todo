@@ -17,26 +17,33 @@ interface Todo {
   id: number
   title: string
   description: string
+  editMode: boolean
 }
+
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || ''
 
 export default function Home() {
   const [data, setData] = useState<Todo[]>([])
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('http://localhost:3001/todos')
+    fetch(baseUrl + '/api/todos')
       .then(response => response.json())
       .then(data => {
-        setData(data)
+        setData(
+          data
+            .map((todo: Todo) => ({ ...todo, editMode: false }))
+            .sort((a: Todo, b: Todo) => a.id - b.id)
+        )
         setLoading(false)
       })
   }, [])
 
   const addTodo = () => {
-    fetch('/api/todos', {
+    fetch(baseUrl + '/api/todos', {
       method: 'POST',
       body: JSON.stringify({
         title,
@@ -56,46 +63,141 @@ export default function Home() {
     setDialogOpen(false)
   }
 
+  const updateTodo = (id: number, title: string, description: string) => {
+    fetch(baseUrl + `api/todos`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        id,
+        title,
+        description
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(() => {
+      const newData = data.map(t => {
+        if (t.id === id) {
+          return { ...t, title, description, editMode: !t.editMode }
+        }
+        return t
+      })
+      setData(newData)
+    })
+  }
+
   const deleteTodo = (id: number) => {
-    fetch(`api/todos/${id}`, {
+    fetch(baseUrl + `api/todos/${id}`, {
       method: 'DELETE'
     }).then(() => {
       setData(data.filter(todo => todo.id !== id))
     })
   }
 
-  return (
-    <div className="container mx-auto flex flex-col gap-2 py-4">
+  return !loading ? (
+    <div className='container mx-auto flex flex-col gap-2 py-4'>
       {data.map((todo: Todo) => {
-        return (
-          <Card
-            key={todo.id}
-            className="p-4"
-          >
-            <div className="flex items-center">
-              <div className="flex flex-col">
+        return !todo.editMode ? (
+          <Card key={todo.id} className='p-4'>
+            <div className='flex items-center'>
+              <div className='flex flex-col'>
                 <CardTitle>{todo.title}</CardTitle>
                 <CardDescription>{todo.description}</CardDescription>
               </div>
-              <Button
-                className="ml-auto"
-                onClick={() => deleteTodo(todo.id)}
-                variant="destructive"
-              >
-                X
-              </Button>
+              <div className='ml-auto flex gap-2'>
+                <Button
+                  onClick={() => {
+                    const newData = data.map(t => {
+                      if (t.id === todo.id) {
+                        return { ...t, editMode: !t.editMode }
+                      }
+                      return t
+                    })
+                    setData(newData)
+                  }}
+                  variant='outline'
+                >
+                  edit
+                </Button>
+                <Button
+                  onClick={() => deleteTodo(todo.id)}
+                  variant='destructive'
+                >
+                  X
+                </Button>
+              </div>
+            </div>
+          </Card>
+        ) : (
+          <Card
+            key={todo.id}
+            onKeyDown={e =>
+              e.key.toLowerCase() === 'enter' &&
+              updateTodo(todo.id, todo.title, todo.description)
+            }
+            className='p-4'
+          >
+            <div className='flex items-center'>
+              <div className='flex flex-col gap-2'>
+                <Input
+                  value={todo.title}
+                  onChange={e => {
+                    const newData = data.map(t => {
+                      if (t.id === todo.id) {
+                        return { ...t, title: e.target.value }
+                      }
+                      return t
+                    })
+                    setData(newData)
+                  }}
+                />
+                <Input
+                  value={todo.description}
+                  onChange={e => {
+                    const newData = data.map(t => {
+                      if (t.id === todo.id) {
+                        return { ...t, description: e.target.value }
+                      }
+                      return t
+                    })
+                    setData(newData)
+                  }}
+                />
+              </div>
+              <div className='ml-auto flex gap-2'>
+                <Button
+                  onClick={() => {
+                    updateTodo(todo.id, todo.title, todo.description)
+                  }}
+                  variant='outline'
+                >
+                  ✓
+                </Button>
+                <Button
+                  onClick={() => {
+                    const newData = data.map(t => {
+                      if (t.id === todo.id) {
+                        return { ...t, editMode: !t.editMode }
+                      }
+                      return t
+                    })
+                    setData(newData)
+                  }}
+                  variant='outline'
+                >
+                  X
+                </Button>
+              </div>
             </div>
           </Card>
         )
       })}
-      <Dialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-      >
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline">Add</Button>
+          <Button variant='outline'>Add</Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent
+          onKeyDown={e => e.key.toLowerCase() === 'enter' && addTodo()}
+        >
           <DialogHeader>
             <DialogTitle>Add Todo</DialogTitle>
           </DialogHeader>
@@ -105,28 +207,27 @@ export default function Home() {
             onChange={e => {
               setTitle(e.target.value)
             }}
-            onKeyDown={e => e.key.toLowerCase() === 'enter' && addTodo()}
-            placeholder="Title"
+            placeholder='Title'
           />
           <Input
             value={description}
             onChange={e => {
               setDescription(e.target.value)
             }}
-            onKeyDown={e => e.key.toLowerCase() === 'enter' && addTodo()}
-            placeholder="Description"
+            placeholder='Description'
           />
 
           <DialogFooter>
-            <Button
-              onClick={addTodo}
-              variant="outline"
-            >
+            <Button onClick={addTodo} variant='outline'>
               Add
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
+  ) : (
+    <div className='w-screen h-screen flex items-center justify-center'>
+      <div>Loading...</div>
     </div>
   )
 }
