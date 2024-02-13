@@ -36,7 +36,7 @@ export default function Home() {
   }, [])
 
   const addTodo = () => {
-    fetch('http://localhost:3001/todos', {
+    fetch('/api/todos', {
       method: 'POST',
       body: JSON.stringify({
         title,
@@ -57,7 +57,7 @@ export default function Home() {
   }
 
   const deleteTodo = (id: number) => {
-    fetch(`http://localhost:3001/todos/${id}`, {
+    fetch(`api/todos/${id}`, {
       method: 'DELETE'
     }).then(() => {
       setData(data.filter(todo => todo.id !== id))
