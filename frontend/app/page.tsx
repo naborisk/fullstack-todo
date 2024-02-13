@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 interface Todo {
   id: number
@@ -94,7 +95,21 @@ export default function Home() {
   }
 
   return !loading ? (
-    <div className='container mx-auto flex flex-col gap-2 py-4'>
+    <div className='container mx-auto flex flex-col gap-2'>
+      <div className='flex py-4'>
+        <div className='flex items-center'>
+          <h1 className='text-2xl'>Todo List</h1>
+        </div>
+        <div className='ml-auto'>
+          <Avatar>
+            <AvatarImage
+              src='https://naborisk.com/img/profile.png'
+              alt='@shadcn'
+            />
+            <AvatarFallback>NB</AvatarFallback>
+          </Avatar>
+        </div>
+      </div>
       {data.map((todo: Todo) => {
         return !todo.editMode ? (
           <Card key={todo.id} className='p-4'>
@@ -227,7 +242,7 @@ export default function Home() {
     </div>
   ) : (
     <div className='w-screen h-screen flex items-center justify-center'>
-      <div>Loading...</div>
+      <div className='text-3xl'>Loading...</div>
     </div>
   )
 }
