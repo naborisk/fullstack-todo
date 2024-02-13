@@ -2,12 +2,8 @@ version: '3.8'
 services:
   frontend:
     image: ghcr.io/naborisk/fullstack-todo-frontend:main
-    ports:
-      - '3000:3000'
   backend:
     image: ghcr.io/naborisk/fullstack-todo-backend:main
-    ports:
-      - '3001:3001'
     restart: always
     depends_on:
       - db
@@ -16,8 +12,16 @@ services:
       - 'DB_HOST=db'
   db:
     image: postgres
-    ports:
-      - '5432:5432'
     environment:
       - 'POSTGRES_PASSWORD=postgres'
       - 'POSTGRES_DB=todo'
+  nginx:
+    image: nginx
+    ports:
+      - '80:80'
+    depends_on:
+      - frontend
+      - backend
+    restart: always
+    volumes:
+      - ./nginx/:/etc/nginx/conf.d/:ro

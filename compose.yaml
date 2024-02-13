@@ -25,9 +25,9 @@ services:
     image: nginx
     ports:
       - '80:80'
-    # depends_on:
-    #   - frontend
-    #   - backend
+    depends_on:
+      - frontend
+      - backend
     restart: always
     volumes:
       - ./nginx/:/etc/nginx/conf.d/:ro
