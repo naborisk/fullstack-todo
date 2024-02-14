@@ -45,7 +45,6 @@ export default function Home() {
             .sort((a: Todo, b: Todo) => a.id - b.id)
         )
         setLoading(false)
-        console.log(data)
       })
   }, [])
 
