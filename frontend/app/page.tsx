@@ -21,8 +21,6 @@ interface Todo {
   editMode: boolean
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL || ''
-
 export default function Home() {
   const [data, setData] = useState<Todo[]>([])
   const [title, setTitle] = useState('')
@@ -31,7 +29,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(baseUrl + '/api/todos')
+    fetch('/api/todos')
       .then(response => response.json())
       .then(data => {
         setData(
@@ -44,7 +42,7 @@ export default function Home() {
   }, [])
 
   const addTodo = () => {
-    fetch(baseUrl + '/api/todos', {
+    fetch('/api/todos', {
       method: 'POST',
       body: JSON.stringify({
         title,
@@ -65,7 +63,7 @@ export default function Home() {
   }
 
   const updateTodo = (id: number, title: string, description: string) => {
-    fetch(baseUrl + `api/todos`, {
+    fetch(`api/todos`, {
       method: 'PUT',
       body: JSON.stringify({
         id,
@@ -87,7 +85,7 @@ export default function Home() {
   }
 
   const deleteTodo = (id: number) => {
-    fetch(baseUrl + `api/todos/${id}`, {
+    fetch(`api/todos/${id}`, {
       method: 'DELETE'
     }).then(() => {
       setData(data.filter(todo => todo.id !== id))

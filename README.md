@@ -21,16 +21,10 @@ docker compose up --build
 ```
 
 ## Building for development
-### Frontend
-cd into `frontend` and use bun
+Use `docker-compose` to run the development build with hot reload
 ```sh
-bun install
-bun run dev
+docker compose -f compose-dev.yaml up
 ```
 
-### Backend
-cd into `backend` and use `air`
-```sh
-go install github.com/cosmtrek/air@latest
-air
-```
+### TODO
+- [ ] fix HMR in docker compose `compose-dev.yaml`

@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  frontend:
+    image: imbios/bun-node:21-debian
+    working_dir: /frontend
+    volumes:
+      - ./frontend/:/frontend:rw
+    command: bun run dev
+    ## use polling in webpack to allow for hmr
+  backend:
+    image: cosmtrek/air
+    # ports:
+    #   - '3001:3001'
+    restart: always
+    working_dir: /backend
+    volumes:
+      - ./backend/:/backend/:ro
+    depends_on:
+      - db
+    environment:
+      - 'PORT=3001'
+      - 'DB_HOST=db'
+  db:
+    image: postgres
+    environment:
+      - 'POSTGRES_PASSWORD=postgres'
+      - 'POSTGRES_DB=todo'
+  nginx:
+    image: nginx
+    ports:
+      - '80:80'
+    depends_on:
+      - frontend
+      - backend
+    restart: always
+    volumes:
+      - ./nginx/:/etc/nginx/conf.d/:ro
