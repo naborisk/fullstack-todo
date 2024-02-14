@@ -2,16 +2,16 @@ version: '3.8'
 services:
   frontend:
     image: imbios/bun-node:21-debian
-    working_dir: /frontend
+    working_dir: /frontend/
     volumes:
-      - ./frontend/:/frontend:rw
+      - ./frontend/:/frontend/:rw
     command: bun run dev
   backend:
     image: cosmtrek/air
     restart: always
-    working_dir: /backend
+    working_dir: /backend/
     volumes:
-      - ./backend/:/backend/:ro
+      - ./backend/:/backend/:rw
     depends_on:
       - db
     environment:

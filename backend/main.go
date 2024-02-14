@@ -29,7 +29,7 @@ func main() {
 	}
 
 	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
+		return c.String(http.StatusOK, "App is running")
 	})
 
 	e.GET("/todos", service.getTodos)
