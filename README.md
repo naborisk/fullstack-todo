@@ -27,4 +27,5 @@ docker compose -f compose-dev.yaml up
 ```
 
 ### TODO
-- [ ] fix HMR in docker compose `compose-dev.yaml`
+- [x] fix HMR in docker compose `compose-dev.yaml`
+    - [ ] separate prod and dev nginx config

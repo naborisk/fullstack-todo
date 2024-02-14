@@ -6,11 +6,8 @@ services:
     volumes:
       - ./frontend/:/frontend:rw
     command: bun run dev
-    ## use polling in webpack to allow for hmr
   backend:
     image: cosmtrek/air
-    # ports:
-    #   - '3001:3001'
     restart: always
     working_dir: /backend
     volumes:
