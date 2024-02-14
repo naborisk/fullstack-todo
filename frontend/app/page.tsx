@@ -19,6 +19,8 @@ interface Todo {
   id: number
   title: string
   description: string
+  dateCreated: string
+  dateDue: string
   completed: boolean
   editMode: boolean
 }
@@ -36,10 +38,14 @@ export default function Home() {
       .then(data => {
         setData(
           data
-            .map((todo: Todo) => ({ ...todo, editMode: false }))
+            .map((todo: Todo) => ({
+              ...todo,
+              editMode: false
+            }))
             .sort((a: Todo, b: Todo) => a.id - b.id)
         )
         setLoading(false)
+        console.log(data)
       })
   }, [])
 
@@ -115,16 +121,16 @@ export default function Home() {
   }
 
   return !loading ? (
-    <div className="container mx-auto flex flex-col gap-2">
-      <div className="flex py-4">
-        <div className="flex items-center">
-          <h1 className="text-2xl">Todo List</h1>
+    <div className='container mx-auto flex flex-col gap-2'>
+      <div className='flex py-4'>
+        <div className='flex items-center'>
+          <h1 className='text-2xl'>Todo List</h1>
         </div>
-        <div className="ml-auto">
+        <div className='ml-auto'>
           <Avatar>
             <AvatarImage
-              src="https://naborisk.com/img/profile.png"
-              alt="@shadcn"
+              src='https://naborisk.com/img/profile.png'
+              alt='@naborisk'
             />
             <AvatarFallback>NB</AvatarFallback>
           </Avatar>
@@ -132,23 +138,28 @@ export default function Home() {
       </div>
       {data.map((todo: Todo) => {
         return !todo.editMode ? (
-          <Card
-            key={todo.id}
-            className="p-4"
-          >
-            <div className="flex items-center">
+          <Card key={todo.id} className='p-4'>
+            <div className='flex items-center'>
               <Checkbox
                 checked={todo.completed}
                 onCheckedChange={() => {
                   toggleComplete(todo.id)
                 }}
-                className="mr-4"
+                className='mr-4'
               />
-              <div className="flex flex-col">
+              <div className='flex flex-col'>
                 <CardTitle>{todo.title}</CardTitle>
                 <CardDescription>{todo.description}</CardDescription>
               </div>
-              <div className="ml-auto flex gap-2">
+              <div className='ml-auto flex gap-2 items-center'>
+                <div>
+                  <CardDescription>
+                    {'Created: ' + new Date(todo.dateCreated).toLocaleString()}
+                  </CardDescription>
+                  <CardDescription>
+                    {'Due: ' + new Date(todo.dateDue).toLocaleString()}
+                  </CardDescription>
+                </div>
                 <Button
                   onClick={() => {
                     const newData = data.map(t => {
@@ -159,13 +170,13 @@ export default function Home() {
                     })
                     setData(newData)
                   }}
-                  variant="outline"
+                  variant='outline'
                 >
                   edit
                 </Button>
                 <Button
                   onClick={() => deleteTodo(todo.id)}
-                  variant="destructive"
+                  variant='destructive'
                 >
                   X
                 </Button>
@@ -179,10 +190,10 @@ export default function Home() {
               e.key.toLowerCase() === 'enter' &&
               updateTodo(todo.id, todo.title, todo.description)
             }
-            className="p-4"
+            className='p-4'
           >
-            <div className="flex items-center">
-              <div className="flex flex-col gap-2">
+            <div className='flex items-center'>
+              <div className='flex flex-col gap-2'>
                 <Input
                   value={todo.title}
                   onChange={e => {
@@ -208,12 +219,12 @@ export default function Home() {
                   }}
                 />
               </div>
-              <div className="ml-auto flex gap-2">
+              <div className='ml-auto flex gap-2'>
                 <Button
                   onClick={() => {
                     updateTodo(todo.id, todo.title, todo.description)
                   }}
-                  variant="outline"
+                  variant='outline'
                 >
                   ✓
                 </Button>
@@ -227,7 +238,7 @@ export default function Home() {
                     })
                     setData(newData)
                   }}
-                  variant="outline"
+                  variant='outline'
                 >
                   X
                 </Button>
@@ -236,12 +247,9 @@ export default function Home() {
           </Card>
         )
       })}
-      <Dialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-      >
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline">Add</Button>
+          <Button variant='outline'>Add</Button>
         </DialogTrigger>
         <DialogContent
           onKeyDown={e => e.key.toLowerCase() === 'enter' && addTodo()}
@@ -255,21 +263,18 @@ export default function Home() {
             onChange={e => {
               setTitle(e.target.value)
             }}
-            placeholder="Title"
+            placeholder='Title'
           />
           <Input
             value={description}
             onChange={e => {
               setDescription(e.target.value)
             }}
-            placeholder="Description"
+            placeholder='Description'
           />
 
           <DialogFooter>
-            <Button
-              onClick={addTodo}
-              variant="outline"
-            >
+            <Button onClick={addTodo} variant='outline'>
               Add
             </Button>
           </DialogFooter>
@@ -277,8 +282,8 @@ export default function Home() {
       </Dialog>
     </div>
   ) : (
-    <div className="w-screen h-screen flex items-center justify-center">
-      <div className="text-3xl">Loading...</div>
+    <div className='w-screen h-screen flex items-center justify-center'>
+      <div className='text-3xl'>Loading...</div>
     </div>
   )
 }

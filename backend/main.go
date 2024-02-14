@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -29,7 +30,8 @@ func main() {
 	}
 
 	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "App is running")
+		dt := time.Now()
+		return c.String(http.StatusOK, "Current time: "+dt.Format("2006-01-02 15:04:05"))
 	})
 
 	e.GET("/todos", service.getTodos)

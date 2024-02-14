@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -9,10 +10,12 @@ import (
 )
 
 type Todo struct {
-	ID          uint   `json:"id" gorm:"primary_key;auto_increment"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Completed   bool   `json:"completed"`
+	ID          uint      `json:"id" gorm:"primary_key;auto_increment"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	DateCreated time.Time `json:"dateCreated"`
+	DateDue     time.Time `json:"dateDue"`
+	Completed   bool      `json:"completed"`
 }
 
 type TodoService struct {
@@ -55,6 +58,8 @@ func (s TodoService) getTodo(c echo.Context) error {
 
 func (s TodoService) addTodo(c echo.Context) error {
 	data := Todo{}
+
+	data.DateCreated = time.Now()
 	err := c.Bind(&data)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
