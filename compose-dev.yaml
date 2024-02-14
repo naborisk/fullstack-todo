@@ -5,7 +5,8 @@ services:
     working_dir: /frontend/
     volumes:
       - ./frontend/:/frontend/:rw
-    command: bun run dev
+    command: >
+      bash -c 'bun i && bun run dev'
   backend:
     image: cosmtrek/air
     restart: always
