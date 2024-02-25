@@ -160,6 +160,50 @@ export default function Home() {
           {completedMode ? 'Show Incomplete' : 'Show Completed'}
         </Button>
       </div>
+      <Dialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+      >
+        <DialogTrigger asChild>
+          <Button
+            className="w-40 place-self-end"
+            variant="default"
+          >
+            New Todo
+          </Button>
+        </DialogTrigger>
+        <DialogContent
+          onKeyDown={e => e.key.toLowerCase() === 'enter' && addTodo()}
+        >
+          <DialogHeader>
+            <DialogTitle>Add Todo</DialogTitle>
+          </DialogHeader>
+          <DialogDescription>Add a new todo</DialogDescription>
+          <Input
+            value={title}
+            onChange={e => {
+              setTitle(e.target.value)
+            }}
+            placeholder="Title"
+          />
+          <Input
+            value={description}
+            onChange={e => {
+              setDescription(e.target.value)
+            }}
+            placeholder="Description"
+          />
+
+          <DialogFooter>
+            <Button
+              onClick={addTodo}
+              variant="outline"
+            >
+              Add
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       {displayData.map((todo: Todo) => {
         return !todo.editMode ? (
           <Card
@@ -271,45 +315,6 @@ export default function Home() {
           </Card>
         )
       })}
-      <Dialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-      >
-        <DialogTrigger asChild>
-          <Button variant="outline">Add</Button>
-        </DialogTrigger>
-        <DialogContent
-          onKeyDown={e => e.key.toLowerCase() === 'enter' && addTodo()}
-        >
-          <DialogHeader>
-            <DialogTitle>Add Todo</DialogTitle>
-          </DialogHeader>
-          <DialogDescription>Add a new todo</DialogDescription>
-          <Input
-            value={title}
-            onChange={e => {
-              setTitle(e.target.value)
-            }}
-            placeholder="Title"
-          />
-          <Input
-            value={description}
-            onChange={e => {
-              setDescription(e.target.value)
-            }}
-            placeholder="Description"
-          />
-
-          <DialogFooter>
-            <Button
-              onClick={addTodo}
-              variant="outline"
-            >
-              Add
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   ) : (
     <div className="w-screen h-screen flex items-center justify-center">
