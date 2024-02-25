@@ -308,7 +308,7 @@ export default function Home() {
                   }}
                   variant="outline"
                 >
-                  : X
+                  X
                 </Button>
               </div>
             </div>
