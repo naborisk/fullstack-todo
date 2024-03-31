@@ -33,6 +33,7 @@ export default function Home() {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [completedMode, setCompletedMode] = useState(false)
+  const [loadFailed, setLoadFailed] = useState(false)
 
   useEffect(() => {
     fetch('/api/todos')
@@ -51,6 +52,9 @@ export default function Home() {
           data.filter((todo: Todo) => todo.completed === completedMode)
         )
         setLoading(false)
+      })
+      .catch(e => {
+        setLoadFailed(true)
       })
   }, [])
 
@@ -318,7 +322,9 @@ export default function Home() {
     </div>
   ) : (
     <div className="w-screen h-screen flex items-center justify-center">
-      <div className="text-3xl">Loading...</div>
+      <div className="text-3xl">
+        {loadFailed ? 'Failed to load application :(' : 'Loading...'}
+      </div>
     </div>
   )
 }
