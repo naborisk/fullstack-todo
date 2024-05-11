@@ -1,7 +1,8 @@
 use axum::{routing::get, Json, Router};
 use serde::Serialize;
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
 struct Todo {
     id: u32,
     title: String,
@@ -20,7 +21,7 @@ async fn main() {
 }
 
 async fn todos() -> Json<Vec<Todo>> {
-    let todo = Todo {
+    let todo1 = Todo {
         id: 1,
         title: "Learn Axum".to_string(),
         description: "Learn how to use Axum".to_string(),
@@ -28,5 +29,15 @@ async fn todos() -> Json<Vec<Todo>> {
         completed: false,
     };
 
-    Json(vec![todo])
+    let todo2 = Todo {
+        id: 2,
+        title: "Learn Rust".to_string(),
+        description: "Learn how to use Rust".to_string(),
+        date_created: "2021-09-01".to_string(),
+        completed: false,
+    };
+
+    let todos = vec![todo1.clone(), todo2.clone(), todo2.clone(), todo1];
+
+    Json(todos)
 }
