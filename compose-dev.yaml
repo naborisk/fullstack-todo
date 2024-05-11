@@ -8,7 +8,9 @@ services:
     command: >
       bash -c 'bun i && bun run dev'
   backend:
-    image: cosmtrek/air
+    image: rust:1.78-buster
+    command: >
+      bash -c 'cargo install cargo-watch && cargo watch -x run'
     restart: always
     working_dir: /backend/
     volumes:

@@ -1,7 +1,7 @@
-FROM golang:1.22.0 as builder
+FROM rust:1.78-buster as builder
 COPY . .
-RUN go build -o /bin/app .
+RUN cargo build --release
 
 FROM debian:bookworm
-COPY --from=builder /bin/app /bin/app
-CMD ["/bin/app"]
+COPY --from=builder /target/release/backend /usr/local/bin/backend
+CMD ["/usr/local/bin/backend"]
